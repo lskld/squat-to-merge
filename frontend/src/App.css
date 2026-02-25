@@ -792,3 +792,124 @@
   outline-offset: 2px;
 }
 
+.tracker-section {
+  width: 100%;
+  max-width: 900px;
+}
+
+.action-button {
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.65rem 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: linear-gradient(135deg, var(--accent-gradient-start) 0%, var(--accent-gradient-end) 100%);
+  cursor: pointer;
+}
+
+.action-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.camera-wrap {
+  position: relative;
+  border: 1px solid var(--weather-card-border);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: var(--bg-gradient-end);
+}
+
+.camera-video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.skeleton-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.camera-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 1rem;
+  color: var(--text-primary);
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.stat-card {
+  background: var(--weather-card-bg);
+  border: 1px solid var(--weather-card-border);
+  border-radius: 0.75rem;
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.stat-label {
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+.stat-value {
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.progress-track {
+  height: 0.6rem;
+  background: var(--skeleton-bg-1);
+  border: 1px solid var(--weather-card-border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent-gradient-start), var(--accent-gradient-end));
+  transition: width 140ms ease-out, background-color 140ms ease-out;
+}
+
+.goal-status {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.is-standing {
+  color: var(--accent-gradient-start);
+}
+
+.is-squat {
+  color: var(--accent-gradient-end);
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
