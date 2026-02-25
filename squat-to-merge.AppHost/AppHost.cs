@@ -1,12 +1,39 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
+const int webfrontendPort = 5173;
+
+// Secrets — set via: dotnet user-secrets set "Parameters:<name>" "<value>"
+var githubAppId = builder.AddParameter("github-app-id", secret: true);
+var githubAppSlug = builder.AddParameter("github-app-slug");
+var githubClientId = builder.AddParameter("github-client-id", secret: true);
+var githubClientSecret = builder.AddParameter("github-client-secret", secret: true);
+var githubPrivateKeyPem = builder.AddParameter("github-private-key-pem", secret: true);
+var webhookSecret = builder.AddParameter("webhook-secret", secret: true);
+var livekitApiKey = builder.AddParameter("livekit-api-key", secret: true);
+var livekitApiSecret = builder.AddParameter("livekit-api-secret", secret: true);
+var livekitUrl = builder.AddParameter("livekit-url");
+
 var server = builder.AddProject<Projects.squat_to_merge_Server>("server")
+    .WithEnvironment("GitHub__AppId", githubAppId)
+    .WithEnvironment("GitHub__AppSlug", githubAppSlug)
+    .WithEnvironment("GitHub__ClientId", githubClientId)
+    .WithEnvironment("GitHub__ClientSecret", githubClientSecret)
+    .WithEnvironment("GitHub__PrivateKeyPem", githubPrivateKeyPem)
+    .WithEnvironment("GitHub__WebhookSecret", webhookSecret)
+    .WithEnvironment("LiveKit__ApiKey", livekitApiKey)
+    .WithEnvironment("LiveKit__ApiSecret", livekitApiSecret)
+    .WithEnvironment("LiveKit__Url", livekitUrl)
     .WithHttpHealthCheck("/health")
     .WithExternalHttpEndpoints();
 
 var webfrontend = builder.AddViteApp("webfrontend", "../frontend")
+    .WithEndpoint("http", endpoint =>
+    {
+        endpoint.Port = webfrontendPort;
+    })
     .WithReference(server)
     .WaitFor(server);
+
 
 server.PublishWithContainerFiles(webfrontend, "wwwroot");
 
