@@ -358,7 +358,7 @@ function ViewerView({
   room: Room | null
   roomInfo: RoomInfo
 }) {
-  const videoContainerRef = useRef<HTMLDivElement | null>(null)
+  const videoAttachRef = useRef<HTMLDivElement | null>(null)
   const [progress, setProgress] = useState<ProgressData>({
     type: 'squat_progress',
     repCount: roomInfo.squatCount,
@@ -375,11 +375,27 @@ function ViewerView({
         el.className = 'camera-video viewer-video'
         el.style.width = '100%'
         el.style.borderRadius = '0.75rem'
-        if (videoContainerRef.current) {
-          videoContainerRef.current.innerHTML = ''
-          videoContainerRef.current.appendChild(el)
+        const container = videoAttachRef.current
+        if (container) {
+          // Remove only previously-attached video elements, not React-managed nodes
+          Array.from(container.children).forEach((child) => {
+            if (child instanceof HTMLVideoElement) {
+              child.remove()
+            }
+          })
+          container.appendChild(el)
         }
         setHasVideo(true)
+      }
+    },
+    [],
+  )
+
+  const handleTrackUnsubscribed = useCallback(
+    (track: any) => {
+      if (track.kind === Track.Kind.Video) {
+        track.detach().forEach((el: HTMLElement) => el.remove())
+        setHasVideo(false)
       }
     },
     [],
@@ -401,6 +417,7 @@ function ViewerView({
     if (!room) return
 
     room.on(RoomEvent.TrackSubscribed, handleTrackSubscribed)
+    room.on(RoomEvent.TrackUnsubscribed, handleTrackUnsubscribed)
     room.on(RoomEvent.DataReceived, handleDataReceived)
 
     // Handle already-subscribed tracks
@@ -414,9 +431,10 @@ function ViewerView({
 
     return () => {
       room.off(RoomEvent.TrackSubscribed, handleTrackSubscribed)
+      room.off(RoomEvent.TrackUnsubscribed, handleTrackUnsubscribed)
       room.off(RoomEvent.DataReceived, handleDataReceived)
     }
-  }, [room, handleTrackSubscribed, handleDataReceived])
+  }, [room, handleTrackSubscribed, handleTrackUnsubscribed, handleDataReceived])
 
   const fullSquatValue = progress.fullSquatPercent ?? 0
   const fullSquatHue = Math.round((fullSquatValue / 100) * 120)
@@ -433,7 +451,8 @@ function ViewerView({
           <span className="viewer-badge">👀 Viewer</span>
         </div>
 
-        <div className="camera-wrap" ref={videoContainerRef}>
+        <div className="camera-wrap">
+          <div ref={videoAttachRef} className="viewer-video-container" />
           {!hasVideo && (
             <div className="camera-overlay">
               Waiting for @{roomInfo.prAuthor} to start their camera...
