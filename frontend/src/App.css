@@ -818,6 +818,113 @@
   border-radius: 0.75rem;
   overflow: hidden;
   background: var(--bg-gradient-end);
+  aspect-ratio: 16 / 9;
+}
+
+.livekit-panel {
+  background: var(--weather-card-bg);
+  border: 1px solid var(--weather-card-border);
+  border-radius: 0.75rem;
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.livekit-controls {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.livekit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.livekit-input {
+  border: 1px solid var(--weather-card-border);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border-radius: 0.5rem;
+  padding: 0.55rem 0.65rem;
+}
+
+.remote-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.remote-grid-main {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.remote-grid-main .remote-tile {
+  height: 100%;
+  min-height: 0;
+}
+
+.emoji-row {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.emoji-button {
+  border: 1px solid var(--weather-card-border);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border-radius: 0.5rem;
+  padding: 0.25rem 0.45rem;
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+
+.reaction-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.reaction-chip {
+  border-radius: 999px;
+  border: 1px solid var(--weather-card-border);
+  background: var(--card-bg);
+  padding: 0.2rem 0.55rem;
+  font-size: 0.8rem;
+}
+
+.remote-tile {
+  position: relative;
+  border-radius: 0.65rem;
+  border: 1px solid var(--weather-card-border);
+  overflow: hidden;
+  background: var(--bg-gradient-end);
+  min-height: 120px;
+}
+
+.remote-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  aspect-ratio: 16 / 9;
+  display: block;
+}
+
+.remote-label {
+  position: absolute;
+  left: 0.4rem;
+  bottom: 0.4rem;
+  font-size: 0.75rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
 }
 
 .camera-video {
@@ -908,6 +1015,14 @@
 }
 
 @media (max-width: 768px) {
+  .livekit-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .remote-grid {
+    grid-template-columns: 1fr;
+  }
+
   .stats-grid {
     grid-template-columns: 1fr;
   }
