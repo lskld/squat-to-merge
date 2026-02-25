@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="frontend/frontend.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="squat-to-merge.AppHost/squat-to-merge.AppHost.csproj" />
+  <Project Path="squat-to-merge.Server/squat-to-merge.Server.csproj" />
+</Solution>
