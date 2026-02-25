@@ -43,12 +43,14 @@ var app = builder.Build();
 
 static string GetPublicBaseUrl(HttpContext ctx, IConfiguration config)
 {
-    var configured = config["App:BaseUrl"];
-    if (!string.IsNullOrWhiteSpace(configured))
+    // Prefer an explicit DevTunnel URL injected via environment (DevTunnel__FrontendUrl -> DevTunnel:FrontendUrl)
+    var devTunnel = config["DevTunnel:FrontendUrl"];
+    if (!string.IsNullOrWhiteSpace(devTunnel))
     {
-        return configured.TrimEnd('/');
+        return devTunnel.TrimEnd('/');
     }
 
+    // No fallback to App:BaseUrl — use request host when dev tunnel isn't provided
     return $"{ctx.Request.Scheme}://{ctx.Request.Host}";
 }
 
