@@ -367,3 +367,4 @@ FodyWeavers.xsd
 
 # Extras
 squat-to-merge.AppHost/obj
+squat-to-merge.Server/obj
