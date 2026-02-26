@@ -104,16 +104,17 @@ export default function RoomPage() {
 
   if (loadError) {
     return (
-      <div className="app-container">
-        <header className="app-header">
-          <h1 className="app-title">Squat-to-Merge</h1>
-        </header>
-        <main className="main-content">
-          <div className="card" style={{ textAlign: 'center' }}>
-            <div className="error-message" role="alert">
+      <div className="app-container dashboard-shell">
+        <main className="dashboard-main" style={{ justifyContent: 'center' }}>
+          <div className="dashboard-panel" style={{ textAlign: 'center' }}>
+            <div className="dashboard-alert" role="alert">
               <span>{loadError}</span>
             </div>
-            <Link to="/dashboard" className="action-button" style={{ marginTop: '1rem', display: 'inline-block', textDecoration: 'none' }}>
+            <Link
+              to="/dashboard"
+              className="dashboard-button"
+              style={{ marginTop: '0.75rem', display: 'inline-block', textDecoration: 'none' }}
+            >
               Back to Dashboard
             </Link>
           </div>
@@ -124,9 +125,9 @@ export default function RoomPage() {
 
   if (!roomInfo || !tokenInfo) {
     return (
-      <div className="app-container">
-        <main className="main-content">
-          <div className="card" style={{ textAlign: 'center', padding: '3rem' }}>
+      <div className="app-container dashboard-shell">
+        <main className="dashboard-main" style={{ justifyContent: 'center' }}>
+          <div className="dashboard-panel" style={{ textAlign: 'center', padding: '3rem' }}>
             Loading room...
           </div>
         </main>
@@ -135,38 +136,43 @@ export default function RoomPage() {
   }
 
   return (
-    <div className="app-container">
-      <header className="app-header">
-        <div className="room-header-row">
-          <Link to="/dashboard" className="back-link">← Dashboard</Link>
-          <h1 className="app-title">
-            {roomInfo.repoOwner}/{roomInfo.repoName} PR #{roomInfo.prNumber}
-          </h1>
-          <span className={`connection-badge ${connectionState}`}>
-            {connectionState}
-          </span>
-        </div>
-        <p className="app-subtitle">
-          {tokenInfo.isSquatter
-            ? 'You are the squatter! Complete 10 squats to merge this PR.'
-            : `Watching @${roomInfo.prAuthor} squat to merge.`}
-        </p>
-      </header>
+    <div className="app-container dashboard-shell">
+      <main className="dashboard-main room-main">
+        <header className="room-topbar">
+          <div className="room-title-block">
+            <div className="room-topline">
+              <Link to="/dashboard" className="dashboard-button dashboard-button-ghost">
+                Back
+              </Link>
+              <span className={`connection-badge ${connectionState}`}>{connectionState}</span>
+            </div>
+            <h1 className="room-title">
+              {roomInfo.repoOwner}/{roomInfo.repoName}
+            </h1>
+            <p className="room-subtitle">PR #{roomInfo.prNumber}</p>
+            <p className="dashboard-copy">
+              {tokenInfo.isSquatter
+                ? 'You are the squatter. Complete 10 squats to merge this pull request.'
+                : `Watching @${roomInfo.prAuthor} complete the squat challenge.`}
+            </p>
+          </div>
+        </header>
 
-      <main className="main-content">
-        {tokenInfo.isSquatter ? (
-          <SquatterView
-            room={livekitRoom}
-            roomId={roomId!}
-            roomInfo={roomInfo}
-            mergeStatus={mergeStatus}
-            isMerging={isMerging}
-            setMergeStatus={setMergeStatus}
-            setIsMerging={setIsMerging}
-          />
-        ) : (
-          <ViewerView room={livekitRoom} roomInfo={roomInfo} />
-        )}
+        <div className="room-content">
+          {tokenInfo.isSquatter ? (
+            <SquatterView
+              room={livekitRoom}
+              roomId={roomId!}
+              roomInfo={roomInfo}
+              mergeStatus={mergeStatus}
+              isMerging={isMerging}
+              setMergeStatus={setMergeStatus}
+              setIsMerging={setIsMerging}
+            />
+          ) : (
+            <ViewerView room={livekitRoom} roomInfo={roomInfo} />
+          )}
+        </div>
       </main>
     </div>
   )
@@ -261,12 +267,12 @@ function SquatterView({
   }, [goalComplete, isMerging, roomId, roomInfo.isMerged, setIsMerging, setMergeStatus])
 
   return (
-    <section className="tracker-section" aria-labelledby="tracker-heading">
-      <div className="card">
-        <div className="section-header">
-          <h2 id="tracker-heading" className="section-title">Your Squat Challenge</h2>
+    <section className="room-section" aria-labelledby="tracker-heading">
+      <div className="dashboard-panel room-panel">
+        <div className="room-panel-header">
+          <h2 id="tracker-heading" className="room-panel-title">Your squat challenge</h2>
           <button
-            className="action-button"
+            className="dashboard-button"
             onClick={isRunning ? stopTracking : startTracking}
             disabled={isStarting || (goalComplete && !isRunning)}
             type="button"
@@ -276,13 +282,13 @@ function SquatterView({
         </div>
 
         {error && (
-          <div className="error-message" role="alert">
+          <div className="dashboard-alert" role="alert">
             <span>{error}</span>
           </div>
         )}
 
         {mergeStatus && (
-          <div className="merge-status" role="status">
+          <div className="room-merge-status" role="status">
             {mergeStatus}
           </div>
         )}
@@ -293,22 +299,22 @@ function SquatterView({
           {!isRunning && (
             <div className="camera-overlay" aria-hidden="true">
               {goalComplete
-                ? '🎉 Challenge complete! PR merged!'
-                : 'Click "Start Camera" to begin your squat challenge.'}
+                ? 'Challenge complete. Pull request merged.'
+                : 'Start camera to begin the squat challenge.'}
             </div>
           )}
         </div>
 
-        <div className="stats-grid" aria-live="polite">
-          <div className="stat-card">
-            <span className="stat-label">Status</span>
-            <span className={`stat-value ${phase === 'squat' ? 'is-squat' : 'is-standing'}`}>
+        <div className="room-stats-grid" aria-live="polite">
+          <div className="room-stat-card">
+            <span className="room-stat-label">Status</span>
+            <span className={`room-stat-value ${phase === 'squat' ? 'is-squat' : 'is-standing'}`}>
               {phase === 'squat' ? 'In Squat' : 'Standing'}
             </span>
           </div>
-          <div className="stat-card">
-            <span className="stat-label">Full Squat</span>
-            <span className="stat-value">
+          <div className="room-stat-card">
+            <span className="room-stat-label">Full Squat</span>
+            <span className="room-stat-value">
               {fullSquatPercent !== null ? `${fullSquatPercent}%` : '--'}
             </span>
             <div className="progress-track" aria-hidden="true">
@@ -321,25 +327,25 @@ function SquatterView({
               />
             </div>
           </div>
-          <div className="stat-card">
-            <span className="stat-label">Squat Reps</span>
-            <span className="stat-value">
+          <div className="room-stat-card">
+            <span className="room-stat-label">Squat Reps</span>
+            <span className="room-stat-value">
               {Math.min(repCount, SQUAT_GOAL)}/{SQUAT_GOAL}
             </span>
             <div className="progress-track" aria-hidden="true">
               <div className="progress-fill" style={{ width: `${goalProgress}%` }} />
             </div>
-            <span className="goal-status">
+            <span className="room-goal-status">
               {goalComplete
                 ? isMerging
                   ? 'Merging PR…'
-                  : 'Merged ✅'
+                  : 'Merged'
                 : `${SQUAT_GOAL - repCount} to merge`}
             </span>
           </div>
-          <div className="stat-card">
-            <span className="stat-label">Calibration</span>
-            <span className="stat-value">
+          <div className="room-stat-card">
+            <span className="room-stat-label">Calibration</span>
+            <span className="room-stat-value">
               {isCalibrated ? 'Ready' : `${calibrationProgress}%`}
             </span>
           </div>
@@ -442,13 +448,13 @@ function ViewerView({
   const goalComplete = progress.repCount >= SQUAT_GOAL || roomInfo.isMerged
 
   return (
-    <section className="tracker-section" aria-labelledby="viewer-heading">
-      <div className="card">
-        <div className="section-header">
-          <h2 id="viewer-heading" className="section-title">
+    <section className="room-section" aria-labelledby="viewer-heading">
+      <div className="dashboard-panel room-panel">
+        <div className="room-panel-header">
+          <h2 id="viewer-heading" className="room-panel-title">
             Watching @{roomInfo.prAuthor}
           </h2>
-          <span className="viewer-badge">👀 Viewer</span>
+          <span className="dashboard-pill">Viewer</span>
         </div>
 
         <div className="camera-wrap">
@@ -460,22 +466,22 @@ function ViewerView({
           )}
         </div>
 
-        <div className="stats-grid" aria-live="polite">
-          <div className="stat-card">
-            <span className="stat-label">Status</span>
+        <div className="room-stats-grid" aria-live="polite">
+          <div className="room-stat-card">
+            <span className="room-stat-label">Status</span>
             <span
-              className={`stat-value ${progress.phase === 'squat' ? 'is-squat' : 'is-standing'}`}
+              className={`room-stat-value ${progress.phase === 'squat' ? 'is-squat' : 'is-standing'}`}
             >
               {goalComplete
-                ? '🎉 Done!'
+                ? 'Done'
                 : progress.phase === 'squat'
                   ? 'In Squat'
                   : 'Standing'}
             </span>
           </div>
-          <div className="stat-card">
-            <span className="stat-label">Full Squat</span>
-            <span className="stat-value">
+          <div className="room-stat-card">
+            <span className="room-stat-label">Full Squat</span>
+            <span className="room-stat-value">
               {progress.fullSquatPercent !== null ? `${progress.fullSquatPercent}%` : '--'}
             </span>
             <div className="progress-track" aria-hidden="true">
@@ -488,30 +494,29 @@ function ViewerView({
               />
             </div>
           </div>
-          <div className="stat-card">
-            <span className="stat-label">Squat Reps</span>
-            <span className="stat-value">
+          <div className="room-stat-card">
+            <span className="room-stat-label">Squat Reps</span>
+            <span className="room-stat-value">
               {Math.min(progress.repCount, SQUAT_GOAL)}/{SQUAT_GOAL}
             </span>
             <div className="progress-track" aria-hidden="true">
               <div className="progress-fill goal-fill" style={{ width: `${goalProgress}%` }} />
             </div>
-            <span className="goal-status">
-              {goalComplete ? 'PR Merged! ✅' : `${SQUAT_GOAL - progress.repCount} to go`}
+            <span className="room-goal-status">
+              {goalComplete ? 'PR merged' : `${SQUAT_GOAL - progress.repCount} to go`}
             </span>
           </div>
-          <div className="stat-card">
-            <span className="stat-label">Calibration</span>
-            <span className="stat-value">
+          <div className="room-stat-card">
+            <span className="room-stat-label">Calibration</span>
+            <span className="room-stat-value">
               {progress.isCalibrated ? 'Ready' : 'Calibrating...'}
             </span>
           </div>
         </div>
 
         {goalComplete && (
-          <div className="merge-celebration">
-            <span className="celebration-emoji">🎉🏋️💪</span>
-            <p>Challenge complete! The PR has been merged!</p>
+          <div className="room-merge-note">
+            <p>Challenge complete. The pull request has been merged.</p>
           </div>
         )}
       </div>
