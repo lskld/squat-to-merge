@@ -115,9 +115,9 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="app-container">
-        <main className="main-content">
-          <div className="card" style={{ textAlign: 'center', padding: '3rem' }}>
+      <div className="app-container dashboard-shell">
+        <main className="dashboard-main" style={{ justifyContent: 'center' }}>
+          <div className="dashboard-panel" style={{ textAlign: 'center', padding: '3rem' }}>
             Loading...
           </div>
         </main>
@@ -126,69 +126,76 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="app-container">
-      <header className="app-header">
-        <div className="dashboard-header-row">
-          <div className="dashboard-user">
-            {user?.avatarUrl && (
-              <img src={user.avatarUrl} alt="" className="user-avatar" />
-            )}
-            <span className="user-login">{user?.login}</span>
+    <div className="app-container dashboard-shell">
+      <main className="dashboard-main">
+        <header className="dashboard-topbar">
+          <div className="dashboard-branding">
+            <h1 className="dashboard-title">Squat To Merge</h1>
+            <p className="dashboard-subtitle">Dashboard</p>
           </div>
-          <h1 className="app-title">Squat-to-Merge</h1>
-          <button className="action-button logout-button" onClick={logout} type="button">
-            Logout
-          </button>
-        </div>
-      </header>
+          <div className="dashboard-account">
+            {user?.avatarUrl && <img src={user.avatarUrl} alt="" className="user-avatar" />}
+            <span className="user-login">@{user?.login}</span>
+            <button
+              className="dashboard-button dashboard-button-ghost"
+              onClick={logout}
+              type="button"
+            >
+              Log out
+            </button>
+          </div>
+        </header>
 
-      <main className="dashboard-content">
         {error && (
-          <div className="error-message" role="alert">
+          <div className="dashboard-alert" role="alert">
             <span>{error}</span>
           </div>
         )}
 
-        {/* Active Rooms */}
         {activeRooms.length > 0 && (
-          <section className="dashboard-section">
-            <h2 className="section-title">Active Squat Rooms</h2>
-            <div className="rooms-grid">
+          <section className="dashboard-panel">
+            <div className="dashboard-section-head">
+              <h2 className="dashboard-section-title">Active rooms</h2>
+              <span className="dashboard-meta">{activeRooms.length}</span>
+            </div>
+            <div className="dashboard-list">
               {activeRooms.map((room) => (
-                <div
+                <button
                   key={room.roomId}
-                  className={`room-card ${room.isMerged ? 'room-merged' : ''}`}
+                  className="dashboard-room"
                   onClick={() => navigate(`/room/${room.roomId}`)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => e.key === 'Enter' && navigate(`/room/${room.roomId}`)}
+                  type="button"
                 >
-                  <div className="room-repo">
-                    {room.repoOwner}/{room.repoName}
+                  <div className="dashboard-room-main">
+                    <span className="dashboard-room-repo">
+                      {room.repoOwner}/{room.repoName}
+                    </span>
+                    <span className="dashboard-room-pr">PR #{room.prNumber}</span>
+                    <span className="dashboard-room-author">@{room.prAuthor}</span>
                   </div>
-                  <div className="room-pr">PR #{room.prNumber}</div>
-                  <div className="room-author">by @{room.prAuthor}</div>
-                  <div className="room-status">
-                    {room.isMerged ? '✅ Merged' : `🏋️ ${room.squatCount}/10 squats`}
-                  </div>
-                </div>
+                  <span className={`dashboard-pill ${room.isMerged ? 'is-success' : ''}`}>
+                    {room.isMerged ? 'Merged' : `${room.squatCount}/10 squats`}
+                  </span>
+                </button>
               ))}
             </div>
           </section>
         )}
 
-        {/* Watched Repos */}
         {watched.length > 0 && (
-          <section className="dashboard-section">
-            <h2 className="section-title">Watched Repositories</h2>
-            <div className="watched-list">
+          <section className="dashboard-panel">
+            <div className="dashboard-section-head">
+              <h2 className="dashboard-section-title">Watched repositories</h2>
+              <span className="dashboard-meta">{watched.length}</span>
+            </div>
+            <div className="dashboard-list">
               {watched.map((w) => (
-                <div key={`${w.owner}/${w.repo}`} className="watched-item">
-                  <span className="watched-name">
+                <div key={`${w.owner}/${w.repo}`} className="dashboard-row">
+                  <span className="dashboard-row-title">
                     {w.owner}/{w.repo}
                   </span>
                   <button
-                    className="action-button unwatch-button"
+                    className="dashboard-button dashboard-button-danger"
                     onClick={() => unwatchRepo(w.owner, w.repo)}
                     disabled={watchingRepo === `${w.owner}/${w.repo}`}
                     type="button"
@@ -201,12 +208,12 @@ export default function DashboardPage() {
           </section>
         )}
 
-        {/* Repo Picker */}
-        <section className="dashboard-section">
-          <h2 className="section-title">Your Repositories</h2>
-          <p className="section-description">
-            Watch a repository to enable squat-to-merge for its pull requests.
-          </p>
+        <section className="dashboard-panel">
+          <div className="dashboard-section-head">
+            <h2 className="dashboard-section-title">Repositories</h2>
+            <span className="dashboard-meta">{filteredRepos.length}</span>
+          </div>
+          <p className="dashboard-copy">Watch a repository to enable squat-to-merge for pull requests.</p>
           <input
             type="text"
             className="repo-search"
@@ -214,20 +221,20 @@ export default function DashboardPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <div className="repo-list">
+          <div className="dashboard-list">
             {filteredRepos.map((r) => {
               const watching = isWatched(r.owner, r.name)
               return (
-                <div key={r.id} className="repo-item">
-                  <div className="repo-info">
-                    <span className="repo-name">{r.fullName}</span>
-                    {r.isPrivate && <span className="repo-badge">Private</span>}
-                    {r.description && (
-                      <span className="repo-description">{r.description}</span>
-                    )}
+                <div key={r.id} className="dashboard-row">
+                  <div className="dashboard-row-main">
+                    <div className="dashboard-row-title-group">
+                      <span className="dashboard-row-title">{r.fullName}</span>
+                      {r.isPrivate && <span className="dashboard-pill">Private</span>}
+                    </div>
+                    {r.description && <span className="dashboard-row-copy">{r.description}</span>}
                   </div>
                   <button
-                    className={`action-button ${watching ? 'watching' : ''}`}
+                    className={`dashboard-button ${watching ? 'dashboard-button-success' : ''}`}
                     onClick={() =>
                       watching
                         ? unwatchRepo(r.owner, r.name)
@@ -239,7 +246,7 @@ export default function DashboardPage() {
                     {watchingRepo === `${r.owner}/${r.name}`
                       ? '...'
                       : watching
-                        ? 'Watching ✓'
+                        ? 'Watching'
                         : 'Watch'}
                   </button>
                 </div>
@@ -248,7 +255,11 @@ export default function DashboardPage() {
             {filteredRepos.length === 0 && (
               <div className="empty-state" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'flex-start' }}>
                 <p>No repositories found.</p>
-                <a href="/api/auth/install" className="action-button" style={{ textDecoration: 'none' }}>
+                <a
+                  href="/api/auth/install"
+                  className="dashboard-button"
+                  style={{ textDecoration: 'none' }}
+                >
                   Install GitHub App
                 </a>
               </div>

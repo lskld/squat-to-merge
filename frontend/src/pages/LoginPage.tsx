@@ -2,9 +2,9 @@ export default function LoginPage() {
   return (
     <div className="app-container">
       <header className="app-header">
-        <h1 className="app-title">Squat-to-Merge</h1>
+        <h1 className="app-title">Squat To Merge</h1>
         <p className="app-subtitle">
-          Complete 10 squats on camera to merge your pull requests. 💪
+          Complete 10 squats in front of your camera to merge your PR!
         </p>
       </header>
 
@@ -17,7 +17,7 @@ export default function LoginPage() {
               <p className="login-description">
                 Sign in with GitHub to watch your repositories. When a PR is
                 opened, the author must complete 10 squats on camera before
-                it can be merged!
+                it can be merged.
               </p>
             </div>
 
@@ -27,21 +27,6 @@ export default function LoginPage() {
               </svg>
               Sign in with GitHub
             </a>
-
-            <div className="login-features">
-              <div className="feature-item">
-                <span className="feature-icon">📹</span>
-                <span>Webcam-based squat detection</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">👀</span>
-                <span>Live viewer support via LiveKit</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">🔀</span>
-                <span>Auto-merge on completion</span>
-              </div>
-            </div>
           </div>
         </section>
       </main>
