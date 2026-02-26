@@ -862,6 +862,202 @@
   background: #0d1117;
 }
 
+/* ───────────────────────────────────────
+   Squat Meter (big ring gauge)
+   ─────────────────────────────────────── */
+
+.squat-meter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  animation: meter-enter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes meter-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.7) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Pop on rep increment */
+.squat-meter-pop {
+  animation: meter-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes meter-pop {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.12); }
+  60%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+
+.squat-meter-ring-wrap {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  display: grid;
+  place-items: center;
+}
+
+.squat-meter-glow {
+  position: absolute;
+  inset: -30%;
+  border-radius: 50%;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.squat-meter-svg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.squat-meter-ring {
+  transition: stroke-dashoffset 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              stroke 0.35s ease,
+              filter 0.35s ease;
+}
+
+.squat-meter-center {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.squat-meter-percent {
+  font-size: 2.4rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #f0f6fc;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.squat-meter-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #8b949e;
+  transition: color 0.3s ease;
+}
+
+/* Rep counter strip */
+.squat-meter-reps {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  width: 180px;
+}
+
+.squat-meter-rep-bar-track {
+  width: 100%;
+  height: 8px;
+  background: #21262d;
+  border: 1px solid #30363d;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.squat-meter-rep-bar-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #2f81f7, #58a6ff);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.squat-meter-rep-bar-fill.is-done {
+  background: linear-gradient(90deg, #2ea043, #3fb950);
+}
+
+.squat-meter-rep-text {
+  font-size: 1rem;
+  color: #e6edf3;
+  font-variant-numeric: tabular-nums;
+}
+
+.squat-meter-rep-text strong {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.squat-meter-rep-dim {
+  color: #8b949e;
+  font-weight: 400;
+}
+
+.squat-meter-done {
+  font-weight: 700;
+  color: #3fb950;
+  letter-spacing: 0.06em;
+  animation: done-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes done-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.6; }
+}
+
+/* Status pills row */
+.squat-meter-pills {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.squat-meter-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid #30363d;
+  background: #21262d;
+  color: #8b949e;
+  transition: color 0.25s, border-color 0.25s, background 0.25s;
+}
+
+.squat-meter-pill.is-squat {
+  color: #3fb950;
+  border-color: rgba(63, 185, 80, 0.45);
+  background: rgba(63, 185, 80, 0.12);
+}
+
+.squat-meter-pill.is-standing {
+  color: #58a6ff;
+  border-color: rgba(88, 166, 255, 0.35);
+  background: rgba(88, 166, 255, 0.1);
+}
+
+.squat-meter-pill.is-ready {
+  color: #3fb950;
+  border-color: rgba(63, 185, 80, 0.45);
+  background: rgba(63, 185, 80, 0.12);
+}
+
+.squat-meter-pill.is-calibrating {
+  color: #d29922;
+  border-color: rgba(210, 153, 34, 0.4);
+  background: rgba(210, 153, 34, 0.1);
+}
+
 .camera-video {
   display: block;
   width: 100%;
