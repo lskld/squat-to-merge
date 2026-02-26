@@ -10,6 +10,7 @@ import {
 } from 'livekit-client'
 import { useSquatDetection, type SquatPhase } from '../hooks/useSquatDetection'
 import EmojiReactions from '../components/EmojiReactions'
+import SquatMeter from '../components/SquatMeter'
 
 const SQUAT_GOAL = 10
 
@@ -218,9 +219,6 @@ function SquatterView({
     stopTracking,
   } = useSquatDetection(videoRef, canvasRef)
 
-  const fullSquatValue = fullSquatPercent ?? 0
-  const fullSquatHue = Math.round((fullSquatValue / 100) * 120)
-  const goalProgress = Math.min(100, Math.round((repCount / SQUAT_GOAL) * 100))
   const goalComplete = repCount >= SQUAT_GOAL
 
   // Publish video track to LiveKit
@@ -295,6 +293,15 @@ function SquatterView({
           </div>
         )}
 
+        <SquatMeter
+          fullSquatPercent={fullSquatPercent}
+          repCount={repCount}
+          goal={SQUAT_GOAL}
+          phase={phase}
+          isCalibrated={isCalibrated}
+          calibrationProgress={calibrationProgress}
+        />
+
         <div className="camera-wrap">
           <video ref={videoRef} className="camera-video" autoPlay muted playsInline />
           <canvas ref={canvasRef} className="skeleton-canvas" aria-hidden="true" />
@@ -305,52 +312,6 @@ function SquatterView({
                 : 'Start camera to begin the squat challenge.'}
             </div>
           )}
-        </div>
-
-        <div className="room-stats-grid" aria-live="polite">
-          <div className="room-stat-card">
-            <span className="room-stat-label">Status</span>
-            <span className={`room-stat-value ${phase === 'squat' ? 'is-squat' : 'is-standing'}`}>
-              {phase === 'squat' ? 'In Squat' : 'Standing'}
-            </span>
-          </div>
-          <div className="room-stat-card">
-            <span className="room-stat-label">Full Squat</span>
-            <span className="room-stat-value">
-              {fullSquatPercent !== null ? `${fullSquatPercent}%` : '--'}
-            </span>
-            <div className="progress-track" aria-hidden="true">
-              <div
-                className="progress-fill"
-                style={{
-                  width: `${fullSquatValue}%`,
-                  backgroundColor: `hsl(${fullSquatHue} 85% 45%)`,
-                }}
-              />
-            </div>
-          </div>
-          <div className="room-stat-card">
-            <span className="room-stat-label">Squat Reps</span>
-            <span className="room-stat-value">
-              {Math.min(repCount, SQUAT_GOAL)}/{SQUAT_GOAL}
-            </span>
-            <div className="progress-track" aria-hidden="true">
-              <div className="progress-fill" style={{ width: `${goalProgress}%` }} />
-            </div>
-            <span className="room-goal-status">
-              {goalComplete
-                ? isMerging
-                  ? 'Merging PR…'
-                  : 'Merged'
-                : `${SQUAT_GOAL - repCount} to merge`}
-            </span>
-          </div>
-          <div className="room-stat-card">
-            <span className="room-stat-label">Calibration</span>
-            <span className="room-stat-value">
-              {isCalibrated ? 'Ready' : `${calibrationProgress}%`}
-            </span>
-          </div>
         </div>
       </div>
     </section>
@@ -444,9 +405,6 @@ function ViewerView({
     }
   }, [room, handleTrackSubscribed, handleTrackUnsubscribed, handleDataReceived])
 
-  const fullSquatValue = progress.fullSquatPercent ?? 0
-  const fullSquatHue = Math.round((fullSquatValue / 100) * 120)
-  const goalProgress = Math.min(100, Math.round((progress.repCount / SQUAT_GOAL) * 100))
   const goalComplete = progress.repCount >= SQUAT_GOAL || roomInfo.isMerged
 
   return (
@@ -459,6 +417,15 @@ function ViewerView({
           <span className="dashboard-pill">Viewer</span>
         </div>
 
+        <SquatMeter
+          fullSquatPercent={progress.fullSquatPercent}
+          repCount={progress.repCount}
+          goal={SQUAT_GOAL}
+          phase={progress.phase}
+          isCalibrated={progress.isCalibrated}
+          goalComplete={goalComplete}
+        />
+
         <div className="camera-wrap">
           <div ref={videoAttachRef} className="viewer-video-container" />
           {!hasVideo && (
@@ -466,54 +433,6 @@ function ViewerView({
               Waiting for @{roomInfo.prAuthor} to start their camera...
             </div>
           )}
-        </div>
-
-        <div className="room-stats-grid" aria-live="polite">
-          <div className="room-stat-card">
-            <span className="room-stat-label">Status</span>
-            <span
-              className={`room-stat-value ${progress.phase === 'squat' ? 'is-squat' : 'is-standing'}`}
-            >
-              {goalComplete
-                ? 'Done'
-                : progress.phase === 'squat'
-                  ? 'In Squat'
-                  : 'Standing'}
-            </span>
-          </div>
-          <div className="room-stat-card">
-            <span className="room-stat-label">Full Squat</span>
-            <span className="room-stat-value">
-              {progress.fullSquatPercent !== null ? `${progress.fullSquatPercent}%` : '--'}
-            </span>
-            <div className="progress-track" aria-hidden="true">
-              <div
-                className="progress-fill"
-                style={{
-                  width: `${fullSquatValue}%`,
-                  backgroundColor: `hsl(${fullSquatHue} 85% 45%)`,
-                }}
-              />
-            </div>
-          </div>
-          <div className="room-stat-card">
-            <span className="room-stat-label">Squat Reps</span>
-            <span className="room-stat-value">
-              {Math.min(progress.repCount, SQUAT_GOAL)}/{SQUAT_GOAL}
-            </span>
-            <div className="progress-track" aria-hidden="true">
-              <div className="progress-fill goal-fill" style={{ width: `${goalProgress}%` }} />
-            </div>
-            <span className="room-goal-status">
-              {goalComplete ? 'PR merged' : `${SQUAT_GOAL - progress.repCount} to go`}
-            </span>
-          </div>
-          <div className="room-stat-card">
-            <span className="room-stat-label">Calibration</span>
-            <span className="room-stat-value">
-              {progress.isCalibrated ? 'Ready' : 'Calibrating...'}
-            </span>
-          </div>
         </div>
 
         {goalComplete && (
