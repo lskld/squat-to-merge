@@ -39,7 +39,7 @@ public class LiveKitService
             ["roomJoin"] = true,
             ["canPublish"] = canPublish,
             ["canSubscribe"] = true,
-            ["canPublishData"] = canPublish
+            ["canPublishData"] = true
         };
 
         var claims = new List<Claim>

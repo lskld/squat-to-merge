@@ -9,6 +9,7 @@ import {
   ConnectionState,
 } from 'livekit-client'
 import { useSquatDetection, type SquatPhase } from '../hooks/useSquatDetection'
+import EmojiReactions from '../components/EmojiReactions'
 
 const SQUAT_GOAL = 10
 
@@ -172,6 +173,7 @@ export default function RoomPage() {
           ) : (
             <ViewerView room={livekitRoom} roomInfo={roomInfo} />
           )}
+          <EmojiReactions room={livekitRoom} />
         </div>
       </main>
     </div>
