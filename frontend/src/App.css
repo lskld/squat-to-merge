@@ -1,7 +1,7 @@
 /* CSS Variables for theming */
 :root {
-  --bg-gradient-start: #1a1a2e;
-  --bg-gradient-end: #16213e;
+  --bg-gradient-start: #000000;
+  --bg-gradient-end: #0e0034;
   --card-bg: rgba(30, 30, 46, 0.95);
   --card-hover-shadow: rgba(0, 0, 0, 0.3);
   --text-primary: #ffffff;
@@ -935,7 +935,7 @@
 }
 
 .login-emoji {
-  font-size: 3.5rem;
+  font-size: 5rem;
   line-height: 1;
 }
 
