@@ -130,8 +130,8 @@ export default function DashboardPage() {
       <main className="dashboard-main">
         <header className="dashboard-topbar">
           <div className="dashboard-branding">
-            <h1 className="dashboard-title">Squat-to-Merge</h1>
-            <p className="dashboard-subtitle">GitHub App dashboard</p>
+            <h1 className="dashboard-title">Squat To Merge</h1>
+            <p className="dashboard-subtitle">Dashboard</p>
           </div>
           <div className="dashboard-account">
             {user?.avatarUrl && <img src={user.avatarUrl} alt="" className="user-avatar" />}
